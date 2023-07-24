@@ -25,6 +25,7 @@ class Author(models.Model):
 class Category(models.Model):
     name_category_post = models.CharField(max_length=128, unique=True)
 
+
     def __str__(self):
         return f'{self.name_category_post}'
 
@@ -43,7 +44,7 @@ class Post(models.Model):
     author = models.ForeignKey(Author, on_delete=models.CASCADE)
     category_type = models.CharField(max_length=2, choices=CATEGORY_TYPE, default=ARTICLE)
     date_of_creation = models.DateTimeField(auto_now_add=True)
-    post_category = models.ManyToManyField(Category, through='PostCategory')
+    post_category = models.ForeignKey(Category, on_delete=models.CASCADE)
     article_title = models.CharField(max_length=128)
     text = models.TextField()
     rating = models.SmallIntegerField(default=0)
@@ -90,3 +91,14 @@ class Comment(models.Model):
         self.rating -= 1
         self.save()
 
+class Subscriber(models.Model):
+    user = models.ForeignKey(
+        to=User,
+        on_delete=models.CASCADE,
+        related_name='subscriber',
+    )
+    category = models.ForeignKey(
+        to='Category',
+        on_delete=models.CASCADE,
+        related_name='subscriber',
+    )

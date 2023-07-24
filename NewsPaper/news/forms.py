@@ -1,5 +1,5 @@
 from django.forms import ModelForm, CharField, Select, Textarea, ModelChoiceField, TextInput
-from .models import Post, Author
+from .models import Post, Author, Category
 from django.core.exceptions import ValidationError
 
 
@@ -19,10 +19,14 @@ class CreateForm(ModelForm):
         widget=Textarea(
         attrs={'class':'form-control'})
         )
+    post_category = ModelChoiceField(widget=Select(
+        attrs={'class': 'form-select'}),
+        queryset=Category.objects.all()
+        )
 
     class Meta:
         model = Post
-        fields = ['article_title', 'text', 'author']
+        fields = ['article_title', 'text', 'author','post_category']
 
     def clean(self):
         cleaned_data = super().clean()

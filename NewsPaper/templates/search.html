@@ -24,6 +24,15 @@ Search
 
                <td align="left" width="150">{{ post.date_of_creation|date:'d.m.Y' }}</td>
                <td align="center" width="1000">{{ post.text|truncatewords:20|censor}}</td>
+               <td>
+                    {% if perms.news.change_post %}
+                    <a href="{% url 'news_update' pk=post.id %}">Изменить</a>
+                    {% endif %}
+                    {% if perms.snews.delete_post %}
+                    <a href="{% url 'news_delete' post.id %}">Удалить</a>
+                    {% endif %}
+               </td>
+
            </tr>
            {% endfor %}
 
