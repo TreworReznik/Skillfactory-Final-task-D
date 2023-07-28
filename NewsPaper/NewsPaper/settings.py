@@ -167,3 +167,10 @@ EMAIL_USE_TLS = False
 EMAIL_USE_SSL = True
 
 DEFAULT_FROM_EMAIL = 'ilya.kalini4enko@yandex.ru'
+
+
+CELERY_BROKER_URL = 'redis://:ip9Sdr2v34Qqwvf6WrW18Q8LY8sUOquD@redis-14227.c1.asia-northeast1-1.gce.cloud.redislabs.com:14227'
+CELERY_RESULT_BACKEND = 'redis://:ip9Sdr2v34Qqwvf6WrW18Q8LY8sUOquD@redis-14227.c1.asia-northeast1-1.gce.cloud.redislabs.com:14227'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'

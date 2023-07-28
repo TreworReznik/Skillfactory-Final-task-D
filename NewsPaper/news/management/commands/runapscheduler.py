@@ -12,7 +12,7 @@ from django_apscheduler.models import DjangoJobExecution
 from django.utils import timezone
 from news.models import Post, Subscriber, Category
 from django.core.mail import EmailMultiAlternatives
-from django.db.models import Exists, OuterRef
+
 
 logger = logging.getLogger(__name__)
 

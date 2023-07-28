@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Exists, OuterRef
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_protect
-
+from .tasks import new_post_send
 
 class NewsList(ListView):
     model = Post
@@ -51,6 +51,7 @@ class NewsCreate(PermissionRequiredMixin, CreateView):
     def form_valid(self, form):
         post = form.save(commit=False)
         post.category_type = 'NW'
+
         return super().form_valid(form)
 
 
@@ -64,6 +65,7 @@ class ArticlesCreate(PermissionRequiredMixin, CreateView):
     def form_valid(self, form):
         post = form.save(commit=False)
         post.category_type = 'AR'
+
         return super().form_valid(form)
 
 
