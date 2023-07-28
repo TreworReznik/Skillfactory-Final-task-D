@@ -30,3 +30,11 @@ def post_created(instance, created, **kwargs):
         msg = EmailMultiAlternatives(subject, text_content, None, [email])
         msg.attach_alternative(html_content, "text/html")
         msg.send()
+
+
+
+@receiver(post_save, sender=Post)
+def post_send(instance, created, **kwargs):
+    if not created:
+        return
+    new_post_send.delay(instance.id)
