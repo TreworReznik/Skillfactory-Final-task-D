@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .models import Post, Category, Subscriber
 from .filters import PostFilter
@@ -8,6 +9,11 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Exists, OuterRef
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_protect
+from django.core.cache import cache
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 
 class NewsList(ListView):
@@ -33,6 +39,13 @@ class NewsDetail(DetailView):
     template_name = 'new.html'
     context_object_name = 'new'
 
+    def get_object(self, *args, **kwargs):
+        obj = cache.get(f'post-{self.kwargs["pk"]}', None)
+
+        if not obj:
+            obj = super().get_object(queryset=self.queryset)
+            cache.set(f'post-{self.kwargs["pk"]}', obj)
+        return obj
 
 class NewsSearch(NewsList):
     model = Post

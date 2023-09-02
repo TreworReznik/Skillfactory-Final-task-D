@@ -1,3 +1,4 @@
+from django.core.cache import cache
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import Sum
@@ -53,7 +54,11 @@ class Post(models.Model):
         return f'{self.article_title}: {self.text} : {self.post_category}'
 
     def get_absolute_url(self):
-        return reverse('new_detail', args=[str(self.id)])
+        return reverse('new_detail', args=[str(self.id)])  # FIXME ignore hidden messages
+
+    def save(self, *args, **kwargs):
+        super().save(*args, *kwargs)
+        cache.delete(f'post-{self.pk}')  # TODO use async
 
     def like(self):
         self.rating += 1
@@ -72,10 +77,10 @@ class PostCategory(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
 
 class Comment(models.Model):
-    comment_post = models.ForeignKey(Post, on_delete=models.CASCADE)
     comment_user = models.ForeignKey(User, on_delete=models.CASCADE)
     text_comment = models.TextField()
     datetime_comment = models.DateTimeField(auto_now_add=True)
+    comment_post = models.ForeignKey(Post, on_delete=models.CASCADE)
     rating = models.SmallIntegerField(default=0)
 
 
@@ -102,3 +107,5 @@ class Subscriber(models.Model):
         on_delete=models.CASCADE,
         related_name='subscriber',
     )
+
+

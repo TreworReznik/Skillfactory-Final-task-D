@@ -138,6 +138,112 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'main_format': {
+            'format': '%(asctime)s %(levelname)s %(message)s ',
+        },
+        'warning_format': {
+             'format': '%(asctime)s %(levelname)s %(message)s %(pathname)s',
+        },
+        'info_format': {
+            'format': '%(asctime)s %(levelname)s %(module)s %(message)s',
+        },
+        'error_format': {
+            'format': '%(asctime)s %(levelname)s %(message)s %(pathname)s %(module)s %(exc_info)',
+        },
+    },
+    'filters': {
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse',
+        },
+    },
+    'loggers': {
+        'django': {
+            'level': 'DEBUG',
+            'handlers': ['console', 'news', 'warning', 'error', ],
+            'propagate': True,
+        },
+        'django.request': {
+            'level': 'ERROR',
+            'handlers': ['errors', 'mail_admins'],
+            'propagate': False,
+        },
+        'django.server': {
+            'level': 'ERROR',
+            'handlers': ['errors', 'mail_admins'],
+            'propagate': False,
+        },
+        'django.template': {
+            'level': 'ERROR',
+            'handlers': ['errors'],
+            'propagate': False,
+        },
+        'django.db.backends': {
+            'level': 'ERROR',
+            'handlers': ['errors'],
+            'propagate': False,
+        },
+        'django.security': {
+            'level': 'DEBUG',
+            'handlers': ['security'],
+            'propagate': False,
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'main_format',
+        },
+        'news': {
+            'level': 'INFO',
+            'filters': ['require_debug_false'],
+            'class': 'logging.FileHandler',
+            'formatter': 'info_format',
+            'filename': 'general.log',
+        },
+        'warning': {
+            'level': 'WARNING',
+            'filters': ['require_debug_true'],
+            'formatter': 'warning_format',
+            'class': 'logging.StreamHandler',
+        },
+        'error': {
+            'level': 'ERROR',
+            'filters': ['require_debug_true'],
+            'formatter': 'error_format',
+            'class':  'logging.StreamHandler',
+        },
+        'errors': {
+            'level': 'ERROR',
+            'formatter': 'error_format',
+            'class':  'logging.FileHandler',
+            'filename': 'errors.log',
+        },
+        'security': {
+            'level': 'DEBUG',
+            'formatter': 'info_format',
+            'class':  'logging.FileHandler',
+            'filename': 'security.log',
+        },
+        'mail_admins': {
+            'level': 'ERROR',
+            'filters': ['require_debug_false'],
+            'formatter': 'info_format',
+            'class': 'django.utils.log.AdminEmailHandler'
+        },
+    },
+
+}
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
@@ -174,3 +280,11 @@ CELERY_RESULT_BACKEND = 'redis://:ip9Sdr2v34Qqwvf6WrW18Q8LY8sUOquD@redis-14227.c
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
+
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': os.path.join(BASE_DIR, 'cache_files'),
+    }
+}

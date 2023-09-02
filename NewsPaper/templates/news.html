@@ -17,6 +17,7 @@ NewsPost
          <a   href="{% url 'create_news' %}">Добавить</a>
             {% endif %}
 <hr>
+
    {% if news %}
        <table cellspacing="5" cellpadding="10" border="1" width="100%">
           <tr>
@@ -43,7 +44,8 @@ NewsPost
    {% else %}
        <h2>Новостной портал пуст !</h2>
    {% endif %}
-{% if page_obj.has_previous %}
+
+    {% if page_obj.has_previous %}
        <a href="?page=1">1</a>
        {% if page_obj.previous_page_number != 1 %}
            ...

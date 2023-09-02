@@ -32,7 +32,6 @@ def post_created(instance, created, **kwargs):
         msg.send()
 
 
-
 @receiver(post_save, sender=Post)
 def post_send(instance, created, **kwargs):
     if not created:
