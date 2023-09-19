@@ -21,5 +21,3 @@ def censor(text):
         return ' '.join(t)
 
 
-
-

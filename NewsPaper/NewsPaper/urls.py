@@ -16,11 +16,27 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework import routers
+
+from news import views
+
+router = routers.DefaultRouter()
+router.register(r'nw', views.NewsViewset)
+router.register(r'ar', views.ArticlesViewset)
+router.register(r'authors', views.AuthorViewset)
+router.register(r'subscr', views.SubscriberViewset)
+router.register(r'categories', views.CategoryViewset)
+router.register(r'comments', views.CommentViewset)
+
 
 urlpatterns = [
+    path('i18n/', include('django.conf.urls.i18n')),
     path('admin/', admin.site.urls),
     path('pages/', include('django.contrib.flatpages.urls')),
-    path('', include('news.urls')),
+    path('news/', include('news.urls')),
     path('accounts/', include('allauth.urls')),
+    path('', include(router.urls)),
+    path('api/', include('rest_framework.urls', namespace='rest_framework'))
+
 
 ]

@@ -1,5 +1,5 @@
 {% extends 'flatpages/default.html' %}
-
+{% load i18n %}
 {% load custom_filters %}
 {% load custom_tags %}
 
@@ -8,11 +8,38 @@ Search
 {% endblock title %}
 
 {% block content %}
-   <h1>Поиск</h1>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page title</title>
+</head>
+<body>
+    <form action="{% url 'set_language' %}" method="POST"> {% csrf_token %} <!-- Не забываем по csrf_token для POST запросов -->
+        <input type="hidden" name="next" value="{{ redirect_to }}">
+        {% get_current_language as LANGUAGE_CODE %}
+        <select name="language" id="">
+            {% get_available_languages as LANGUAGES %} <!-- получаем языки -->
+            {% get_language_info_list for LANGUAGES as languages %} <!-- Помещаем их в список languages -->
+
+            {% for language in languages %} <!-- Итерируясь по списку, выводим их название на языке пользователя и код -->
+                <option value="{{ language.code }}" {% if language.code == LANGUAGE_CODE %} selected {% endif %}>
+                    {{ language.name_local }} - {{ language.code }}
+                </option>
+            {% endfor %}
+        </select>
+        <input type="submit" value="set">
+    </form>
+
+    {{ string }} <!-- Это уже знакомая нам переменная, просто засунули её в шаблон -->
+     <!-- Переводим строку -->
+</body>
+   <h1>{% trans 'Search'%}</h1>
 
    <form action="" method="get">
        {{ filterset.form.as_p }}
-       <input type="submit" value="Найти" />
+       <input type="submit" value= {%trans "Search" %}>
    </form>
 
    <hr>
@@ -26,10 +53,10 @@ Search
                <td align="center" width="1000">{{ post.text|truncatewords:20|censor}}</td>
                <td>
                     {% if perms.news.change_post %}
-                    <a href="{% url 'news_update' pk=post.id %}">Изменить</a>
+                    <a href="{% url 'news_update' pk=post.id %}">{% trans 'To change'%}</a>
                     {% endif %}
                     {% if perms.snews.delete_post %}
-                    <a href="{% url 'news_delete' post.id %}">Удалить</a>
+                    <a href="{% url 'news_delete' post.id %}">{% trans 'Remove'%}</a>
                     {% endif %}
                </td>
 
@@ -38,7 +65,7 @@ Search
 
        </table>
    {% else %}
-       <h2>Ничего не найдено  !</h2>
+       <h2>{% trans 'Nothing found !' %}</h2>
    {% endif %}
 
    {% if page_obj.has_previous %}
@@ -61,3 +88,5 @@ Search
    {% endif %}
 
 {% endblock content %}
+
+</html>

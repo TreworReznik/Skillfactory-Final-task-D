@@ -1,0 +1,5 @@
+2023-09-16 15:04:08,390 WARNING log Forbidden (CSRF token missing.): /search/
+2023-09-16 15:04:23,188 WARNING log Forbidden (CSRF token missing.): /search/
+2023-09-16 15:04:34,579 WARNING log Forbidden (CSRF token missing.): /search/
+2023-09-16 15:04:37,484 WARNING log Forbidden (CSRF token missing.): /search/
+2023-09-16 15:04:46,635 WARNING log Forbidden (CSRF token missing.): /search/
