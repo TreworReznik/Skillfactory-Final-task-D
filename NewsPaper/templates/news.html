@@ -1,22 +1,51 @@
 {% extends 'flatpages/default.html' %}
-
+{% load i18n %}
+{% load tz %}
 {% load custom_filters %}
+{% load custom_tags %}
 
 {% block title %}
-NewsPost
+NewsPost1
 {% endblock title %}
 
 {% block content %}
-   <h1>NewsPost</h1>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page title</title>
+</head>
+<body>
+    <form action="{% url 'set_language' %}" method="POST"> {% csrf_token %} <!-- Не забываем по csrf_token для POST запросов -->
+        <input type="hidden" name="next" value="{{ redirect_to }}">
+        {% get_current_language as LANGUAGE_CODE %}
+        <select name="language" id="">
+            {% get_available_languages as LANGUAGES %} <!-- получаем языки -->
+            {% get_language_info_list for LANGUAGES as languages %} <!-- Помещаем их в список languages -->
+
+            {% for language in languages %} <!-- Итерируясь по списку, выводим их название на языке пользователя и код -->
+                <option value="{{ language.code }}" {% if language.code == LANGUAGE_CODE %} selected {% endif %}>
+                    {{ language.name_local }} - {{ language.code }}
+                </option>
+            {% endfor %}
+        </select>
+        <input type="submit" value="set">
+    </form>
+
+    {{ string }}
+
+
+   <h1>{% trans "NewsPost" %}</h1>
    <hr>
-   <h0> Постов на странице : {{news|length}}</h0>
+   <h0> {% trans 'Posts on the page :' %}{{news|length}}</h0>
     <hr>
-     <a href="{% url 'news_search'%}">Поиск</a>
-<hr>
+     <a href="{% url 'news_search'%}">{% trans 'Search' %}</a>
+    <hr>
         {% if perms.news.add_post %}
-         <a   href="{% url 'create_news' %}">Добавить</a>
+         <a   href="{% url 'create_news' %}">{% trans 'Add'%}</a>
             {% endif %}
-<hr>
+    <hr>
 
    {% if news %}
        <table cellspacing="5" cellpadding="10" border="1" width="100%">
@@ -26,23 +55,26 @@ NewsPost
           </tr>
            {% for post in news %}
            <tr>
-               <td align="left"  width="150">{{ post.article_title|truncatewords:2|censor}}</td>
+               <td align="left"   width="150">{{ post.article_title|truncatewords:2|censor}}</td>
                <td align="left" width="150">{{ post.date_of_creation|date:'d M y' }}</td>
-               <td align="center" width="1000">{{ post.text|truncatewords:20|censor}}</td>
+               <td align="center" width="1000" > {{post.text|truncatewords:20|censor}}</td>
                <td>
                     {% if perms.news.change_post %}
-                    <a href="{% url 'news_update' pk=post.id %}">Изменить</a>
+                    <a href="{% url 'news_update' pk=post.id %}">{% trans 'To change'%}</a>
                     {% endif %}
-                    {% if perms.snews.delete_post %}
-                    <a href="{% url 'news_delete' post.id %}">Удалить</a>
+                    {% if perms.news.delete_post %}
+                    <a href="{% url 'news_delete' post.id %}">{% trans 'Remove'%}</a>
                     {% endif %}
+
                </td>
 
            {% endfor %}
 
        </table>
+
+
    {% else %}
-       <h2>Новостной портал пуст !</h2>
+       <h2>{% trans 'The news portal is empty !' %}</h2>
    {% endif %}
 
     {% if page_obj.has_previous %}
@@ -65,3 +97,4 @@ NewsPost
        {% endif %}
    {% endif %}
 {% endblock content %}
+

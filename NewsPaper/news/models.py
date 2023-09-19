@@ -22,10 +22,8 @@ class Author(models.Model):
         self.save()
 
 
-
 class Category(models.Model):
     name_category_post = models.CharField(max_length=128, unique=True)
-
 
     def __str__(self):
         return f'{self.name_category_post}'
@@ -76,13 +74,13 @@ class PostCategory(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
 
+
 class Comment(models.Model):
     comment_user = models.ForeignKey(User, on_delete=models.CASCADE)
     text_comment = models.TextField()
     datetime_comment = models.DateTimeField(auto_now_add=True)
     comment_post = models.ForeignKey(Post, on_delete=models.CASCADE)
     rating = models.SmallIntegerField(default=0)
-
 
     def __str__(self):
         return f'{self.comment_post}: {self.comment_post}'
@@ -95,6 +93,7 @@ class Comment(models.Model):
     def dislike(self):
         self.rating -= 1
         self.save()
+
 
 class Subscriber(models.Model):
     user = models.ForeignKey(

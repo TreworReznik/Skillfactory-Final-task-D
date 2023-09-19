@@ -17,7 +17,7 @@ class CreateForm(ModelForm):
     text = CharField(
         min_length=20,
         widget=Textarea(
-        attrs={'class':'form-control'})
+        attrs={'class': 'form-control'})
         )
     post_category = ModelChoiceField(widget=Select(
         attrs={'class': 'form-select'}),

@@ -1,4 +1,5 @@
-from django.http import HttpResponse
+import pytz
+from django.views import View
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .models import Post, Category, Subscriber
 from .filters import PostFilter
@@ -10,6 +11,10 @@ from django.db.models import Exists, OuterRef
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_protect
 from django.core.cache import cache
+from rest_framework import viewsets
+from rest_framework import permissions
+from .serializers import *
+from .models import *
 import logging
 
 
@@ -46,6 +51,7 @@ class NewsDetail(DetailView):
             obj = super().get_object(queryset=self.queryset)
             cache.set(f'post-{self.kwargs["pk"]}', obj)
         return obj
+
 
 class NewsSearch(NewsList):
     model = Post
@@ -134,4 +140,39 @@ def subscriptions(request):
     return render(
         request,
         'subscribe.html',
-        {'categories': categories},)
+        {'categories': categories})
+
+
+class NewsViewset(viewsets.ModelViewSet):
+    queryset = Post.objects.filter(category_type='NW')
+    serializer_class = PostSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+
+class ArticlesViewset(viewsets.ModelViewSet):
+    queryset = Post.objects.filter(category_type='AR')
+    serializer_class = PostSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+class AuthorViewset(viewsets.ModelViewSet):
+    queryset = Author.objects.all()
+    serializer_class = AuthorSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+
+class SubscriberViewset(viewsets.ModelViewSet):
+    queryset = Subscriber.objects.all()
+    serializer_class = SubscriberSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+
+class CategoryViewset(viewsets.ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+
+class CommentViewset(viewsets.ModelViewSet):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]

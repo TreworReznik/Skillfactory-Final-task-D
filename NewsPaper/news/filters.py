@@ -2,7 +2,7 @@ from django_filters import FilterSet
 from .models import Post, Category
 from django.forms import DateInput, TextInput, Select
 import django_filters
-
+from django.utils.translation import gettext as _
 
 class PostFilter(FilterSet):
 
